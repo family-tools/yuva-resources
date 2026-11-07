@@ -1,0 +1,22 @@
+name: Release
+
+# a sounds-v1, sounds-v2... tag publishes the sound packs as a release.
+# Yuva downloads them from there, so they are not in its Docker image.
+on:
+  push:
+    tags: ['sounds-v*']
+
+permissions:
+  contents: write
+
+jobs:
+  sounds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: sounds/build-packs.sh
+      - uses: softprops/action-gh-release@v3
+        with:
+          name: Sound packs ${{ github.ref_name }}
+          body: Adhan and notification sounds for Yuva. Install them from Prayer → Settings → Sound packs.
+          files: sounds/dist/*
